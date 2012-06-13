@@ -45,8 +45,8 @@ store the customer id, by default it is :stripe_id
 
 Available methods
 -----------------
-        create_stripe_customer(token, plan, email, args)
 
+        create_stripe_customer(token, plan, email, args)
 This method will create a customer for stripe and add it to the
 instance you are calling this method from. There are no required
 arguments, you can just create a customer with out parameters. For
@@ -62,18 +62,19 @@ Example:
                 u.stripe_customer
                 # TODO: Returns STRIPE CUSTOMER
 
-       create_subscription
+       create_subscription(plan, token=nil)
+Returns true if a subscription within the given plan for the user 
+could be created, false if it couldn't be created. The token is
+optional as it will try to use the stripe customer card.
 
        stripe_customer
 Returns the Stripe::Customer object for the instance.
 
        stripe_active?
-
 Returns true if the user has a subscription to a plan and has a
 current payment.
 
        stripe_subscribed?
-
 Returns true if the user is currently subscribed to some plan. It
 doesn't mean necessarily that the user is active, just subscribed.
 
@@ -85,8 +86,9 @@ Cancels the subscription of a user. Unless you pass it a true
 parameter, the account will be made inactive immediately, otherwise it
 will be made inactive the date the last payment is due.
 
-       stripe_update_customer(plan, args)
-
+       stripe_update_customer(plan_id)
+Changes costumer plan to the plan with the id specified in the
+plan id parameter.
 
                 
 TODO

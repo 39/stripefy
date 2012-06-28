@@ -1,7 +1,7 @@
 Stripefy
 ========
 
-Get your model ready to interact with Stripe.com and it's ruby gem
+Get your model ready to interact with Stripe.com and its ruby gem
 stripe
 
 Installation

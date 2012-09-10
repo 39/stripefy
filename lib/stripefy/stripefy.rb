@@ -5,11 +5,11 @@ module Stripefy
     
     included do
       delegate :subscription, :cancel_subscription, :update_subscription, :to => :stripe_customer, :allow_nil => true
-      
-      def process_subscription(user_data, card_token)
+
+      def process_subscription(user_data, card_token, plan_id)
         customer = Stripe::Customer.create(:email => user_data['email'],
                                            :card => card_token,
-                                           :plan => Video::PLAN_ID)
+                                           :plan => plan_id)
         self.set_stripe_id customer.id
       end
       

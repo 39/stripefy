@@ -7,10 +7,16 @@ module Stripefy
       delegate :subscription, :cancel_subscription, :update_subscription, :to => :stripe_customer, :allow_nil => true
 
       def process_subscription(user_data, card_token, plan_id)
-        customer = Stripe::Customer.create(:email => user_data['email'],
+        begin
+          customer = Stripe::Customer.create(:email => user_data['email'],
                                            :card => card_token,
                                            :plan => plan_id)
-        self.set_stripe_id customer.id
+          self.set_stripe_id(customer.id) if customer.present?
+          return customer
+        rescue Exception => e
+          logger.fatal "Error when creating stripe customer: #{e.message}"
+          return nil
+        end
       end
       
       def stripe_customer
@@ -49,7 +55,7 @@ module Stripefy
       end
       
       def total_payed
-        self.stripe_charges.nil? ? 0 : self.stripe_charges.sum { |c| c.amount }
+        self.stripe_charges.nil? ? 0 : self.stripe_charges.sum(&:amount)
       end
       
       def last_payment_epoch
@@ -58,6 +64,14 @@ module Stripefy
         else
           self.subscription.nil? ? "0" : self.subscription["current_period_start"]
         end
+      end
+
+      def available_plans
+        Stripe::Plan.all['data']
+      end
+
+      def current_plan
+        self.stripe_customer.subscription.plan unless self.stripe_customer.nil?
       end
     end
   end

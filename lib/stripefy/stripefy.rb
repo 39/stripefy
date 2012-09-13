@@ -14,7 +14,7 @@ module Stripefy
           self.set_stripe_id(customer.id) if customer.present?
           return customer
         rescue Exception => e
-          logger.fatal "Error when creating stripe customer: #{e.message}"
+          Rails.logger.fatal "Error when creating stripe customer: #{e.message}"
           return nil
         end
       end
@@ -23,7 +23,7 @@ module Stripefy
         begin
           @stripe_customer ||= Stripe::Customer.retrieve(self.stripe_id) unless self.stripe_id.nil?
         rescue Exception => e
-          logger.fatal "Error when retriving stripe client #{self.stripe_id}: #{e.message}"
+          Rails.logger.fatal "Error when retriving stripe client #{self.stripe_id}: #{e.message}"
           return
         end
         @stripe_customer
@@ -34,7 +34,7 @@ module Stripefy
         begin
           @stripe_charges = Stripe::Charge.all(:customer => self.stripe_id) unless self.stripe_id.nil?
         rescue Exception => e
-          logger.fatal "Error when retriving stripe charges for customer #{self.stripe_id}: #{e.message}"
+          Rails.logger.fatal "Error when retriving stripe charges for customer #{self.stripe_id}: #{e.message}"
           return
         end
         @stripe_charges[:data]

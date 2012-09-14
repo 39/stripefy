@@ -71,7 +71,7 @@ module Stripefy
       end
 
       def current_plan
-        self.stripe_customer.subscription.plan unless self.stripe_customer.nil?
+        self.stripe_customer.subscription or self.stripe_customer.invoices['data'].last['lines']['subscriptions'].last['plan']
       end
     end
   end

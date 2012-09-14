@@ -72,7 +72,11 @@ module Stripefy
 
       def current_plan
         if self.stripe_customer.respond_to?(:subscription)
-          self.stripe_customer.subscription
+          s = self.stripe_customer.subscription
+          if s.class == Stripe::StripeObject
+            s = s['plan']
+          end
+          s
         else
           self.stripe_customer.invoices['data'].last['lines']['subscriptions'].last['plan']
         end
